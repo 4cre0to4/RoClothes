@@ -16,7 +16,7 @@
 
 	
 	/ ＲＯＣＬＯＴＨＥＳ
-	Version - 0.7.2:lerp()
+	Version - 0.7.3:lerp()
 	Link - discord.gg/HBzvWE6Rp3
 	
 	| RoClothes Is Exploiting Script, Allowing Player To Have Nude BodyParts/Clothes
@@ -35,7 +35,7 @@
 	
 	
 	original version 0.7
-	local version 0.7.2:lerp()
+	local version 0.7.3:lerp()
 	
 	
 
@@ -404,6 +404,15 @@ function RoClothes(Player)
 	GUIObject.UICorner_A13 = Instance.new("UICorner")
 	GUIObject.PHToggle = Instance.new("TextButton")
 
+	GUIObject.Recolor = Instance.new("Frame")
+	GUIObject.RecolorButton = Instance.new("TextButton")
+	GUIObject.UIGradient_A14 = Instance.new("UIGradient")
+	GUIObject.UIAspectRatioConstraint_A2 = Instance.new("UIAspectRatioConstraint")
+	GUIObject.UICorner_A14 = Instance.new("UICorner")
+	GUIObject.RecolorFrame = Instance.new("Frame")
+	GUIObject.RecolorListFrame = Instance.new("ScrollingFrame")
+	GUIObject.UIGridLayout_A1 = Instance.new("UIGridLayout")
+
 	local Mouse = Player:GetMouse()
 
 	local Method2CharacterFolder = game.Workspace:FindFirstChild("Method2CharacterFolder")
@@ -418,7 +427,7 @@ function RoClothes(Player)
 	local TS = game:GetService("TweenService")
 	local MPS = game:GetService("MarketplaceService")
 
-	local CVersion = "0.7.2:lerp()"
+	local CVersion = "0.7.3:lerp()"
 
 	local Method = 1
 	local MaxMethod = 3
@@ -463,6 +472,7 @@ function RoClothes(Player)
 	function Function.PlayerDataDefault()
 		return {
 			CurrentClothes = {},
+			ClothesRecolor = {},
 			CurrentBundle = "nil",
 			AutoExecute = true,
 			DelayTime = 1,
@@ -491,6 +501,7 @@ function RoClothes(Player)
 			LegsType = 1,
 			ToggleBBC = false,
 			Cooldown = false,
+			updateCooldown = false,
 			FPerson = false,
 
 			TopRipped = false,
@@ -534,6 +545,77 @@ function RoClothes(Player)
 			}
 		}
 	end
+
+	local R15Size = {
+		["UpperTorso"] = Vector3.new(2, 1.6, 1),
+		["UpperTorsoFemale"] = Vector3.new(2.043, 1.796, 1.01),
+		["RightLowerArm"] = Vector3.new(1, 1.052, 1),
+		["LeftLowerArm"] = Vector3.new(1, 1.052, 1),
+		["RightLowerLeg"] = Vector3.new(1, 1.193, 1),
+		["LeftLowerLeg"] = Vector3.new(1, 1.193, 1),
+	}
+
+	local R15Transparency = {
+		"UpperTorso",
+		"LowerTorso",
+		"RightUpperArm",
+		"RightLowerArm",
+		"RightHand",
+		"LeftUpperArm",
+		"LeftLowerArm",
+		"LeftHand",
+		"RightUpperLeg",
+		"RightLowerLeg",
+		"RightFoot",
+		"LeftUpperLeg",
+		"LeftLowerLeg",
+		"LeftFoot",
+	}
+
+	local Method2BodyPart = {
+		"UpperTorso",
+		"RightLowerArm",
+		"LeftLowerArm",
+		"RightLowerLeg",
+		"LeftLowerLeg",
+		"Head",
+	}
+
+	local R6Size = {
+		["Head"] = Vector3.new(2, 1, 1),
+		["Torso"] = Vector3.new(2, 2, 1),
+		["Left Arm"] = Vector3.new(1, 2, 1),
+		["Left Leg"] = Vector3.new(1, 2, 1),
+		["Right Arm"] = Vector3.new(1, 2, 1),
+		["Right Leg"] = Vector3.new(1, 2, 1),
+	}
+
+	local WeldCFrame = {
+		["Torso"] = CFrame.new(0, -0.2, 0),
+		["Right Arm"] = CFrame.new(0, 0.2, 0),
+		["Left Arm"] = CFrame.new(0, 0.2, 0),
+		["Right Leg"] = CFrame.new(0, 0.2, 0),
+		["Left Leg"] = CFrame.new(0, 0.2, 0)
+	}
+
+	local ConvertPart = {
+		["Torso"] = "UpperTorso",
+		["Right Arm"] = "RightLowerArm",
+		["Left Arm"] = "LeftLowerArm",
+		["Right Leg"] = "RightLowerLeg",
+		["Left Leg"] = "LeftLowerLeg"
+	}
+
+	local R6Mesh = {
+		["TorsoMale"] = "rbxassetid://456901040",
+		["TorsoFemale"] = "rbxassetid://9747912904",
+		["Right Arm"] = "rbxassetid://5062992824",
+		["Left Arm"] = "rbxassetid://5062992824",
+		["Right Leg"] = "rbxassetid://5062992824",
+		["Left Leg"] = "rbxassetid://5062992824"
+	}
+
+	local ConvertedPart = {}
 
 	--[[
 	--------------------------------------------------------------------------------------------------------------
@@ -1501,6 +1583,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248, 248, 248)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1517,6 +1600,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17, 17, 17)
 				},
+				["Recolor"] = "Tertiary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "School Shirt",
@@ -1534,6 +1618,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(117, 0, 0)
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "School Shirt",
@@ -1551,6 +1636,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17, 17, 17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1567,6 +1653,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17, 17, 17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1583,6 +1670,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248, 248, 248)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -1599,6 +1687,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248, 248, 248)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -1615,6 +1704,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248, 248, 248)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1631,6 +1721,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248, 248, 248)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1647,6 +1738,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(231, 231, 236)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1663,6 +1755,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(117, 0, 0)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1679,6 +1772,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17,17,17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1696,6 +1790,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17,17,17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1713,6 +1808,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17,17,17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -1730,6 +1826,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17,17,17)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -1764,6 +1861,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(204, 187, 198)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1780,6 +1878,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(204, 187, 198)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1813,6 +1912,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1829,6 +1929,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(219, 219, 219)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1846,6 +1947,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(202, 203, 209)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1862,6 +1964,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(202, 203, 209)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1878,6 +1981,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(202, 203, 209)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1894,6 +1998,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -1910,6 +2015,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(219, 219, 219)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -1927,6 +2033,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -1943,6 +2050,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(219, 219, 219)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -1960,6 +2068,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -1976,6 +2085,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg",
 				},
@@ -1992,6 +2102,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(34, 34, 34)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg",
 				},
@@ -2008,6 +2119,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237, 234, 234)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg",
 				},
@@ -2025,6 +2137,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237, 234, 234)
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg",
 				},
@@ -2037,6 +2150,7 @@ function RoClothes(Player)
 					["Color"] = Color3.fromRGB(215, 215, 215),
 					["Tone"] = "Base"
 				},
+				["Recolor"] = "Primary",
 				["Material"] = Enum.Material.SmoothPlastic,
 				["MeshId"] = "rbxasset://RoClothes/10080455422.mesh",
 				["Name"] = "Sweater",
@@ -2054,6 +2168,7 @@ function RoClothes(Player)
 					["Color"] = Color3.fromRGB(215, 215, 215),
 					["Tone"] = "Base"
 				},
+				["Recolor"] = "Primary",
 				["Material"] = Enum.Material.SmoothPlastic,
 				["MeshId"] = "rbxasset://RoClothes/4729777667.mesh",
 				["Name"] = "Tie",
@@ -2071,6 +2186,7 @@ function RoClothes(Player)
 					["Color"] = Color3.fromRGB(163, 162, 165),
 					["Tone"] = "Base"
 				},
+				["Recolor"] = "Secondary",
 				["Material"] = Enum.Material.SmoothPlastic,
 				["MeshId"] = "rbxasset://RoClothes/4342469442.mesh",
 				["Name"] = "Neck",
@@ -2129,6 +2245,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -2148,6 +2265,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(25.000000409781933, 25.000000409781933, 25.000000409781933),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2166,6 +2284,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -2185,6 +2304,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Tertiary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2222,6 +2342,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2352,6 +2473,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2388,6 +2510,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -2406,6 +2529,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 145.00000655651093, 187.00000405311584),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -2424,6 +2548,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2460,6 +2585,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2496,6 +2622,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2514,6 +2641,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2532,6 +2660,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2550,6 +2679,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2568,6 +2698,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2586,6 +2717,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 145.00000655651093, 187.00000405311584),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2604,6 +2736,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 145.00000655651093, 187.00000405311584),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2622,6 +2755,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 145.00000655651093, 187.00000405311584),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2640,6 +2774,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 145.00000655651093, 187.00000405311584),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2658,6 +2793,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2676,6 +2812,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(63.000000044703484, 63.000000044703484, 63.000000044703484),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2695,6 +2832,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(63.000000044703484, 63.000000044703484, 63.000000044703484),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -2714,6 +2852,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(63.000000044703484, 63.000000044703484, 63.000000044703484),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -2733,6 +2872,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2751,6 +2891,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2770,6 +2911,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Breast"
@@ -2789,6 +2931,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Breast"
@@ -2808,6 +2951,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2826,6 +2970,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2844,6 +2989,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -2994,6 +3140,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(163.00000548362732, 162.00000554323196, 165.00000536441803),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -3013,6 +3160,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(163.00000548362732, 162.00000554323196, 165.00000536441803),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -3031,6 +3179,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(163.00000548362732, 162.00000554323196, 165.00000536441803),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -3832,6 +3981,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -3849,6 +3999,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -3866,6 +4017,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -3901,6 +4053,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -3918,6 +4071,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -3951,6 +4105,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "PussyC"
@@ -3970,6 +4125,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "PussyC"
@@ -3988,6 +4144,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -4005,6 +4162,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso"
 				},
@@ -4023,6 +4181,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4037,10 +4196,12 @@ function RoClothes(Player)
 				["Material"] = Enum.Material.Glass,
 				["MeshId"] = "rbxasset://RoClothes/97919823001964.mesh",
 				["DoubleSided"] = false,
+				["Scale"] = "ButtsScale",
 				["Color"] = {
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4060,6 +4221,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4079,6 +4241,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4097,6 +4260,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg"
 				},
@@ -4114,6 +4278,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg"
 				},
@@ -4131,6 +4296,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg"
 				},
@@ -4148,6 +4314,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg"
 				},
@@ -4165,6 +4332,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -4182,6 +4350,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -4199,6 +4368,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg"
 				},
@@ -4216,6 +4386,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -4233,6 +4404,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm"
 				},
@@ -4250,6 +4422,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -4267,6 +4440,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm"
 				},
@@ -4284,6 +4458,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4301,6 +4476,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4318,6 +4494,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4335,6 +4512,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4352,6 +4530,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4369,6 +4548,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4386,6 +4566,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4404,6 +4585,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Breast"
@@ -4423,6 +4605,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Breast"
@@ -4442,6 +4625,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Breast"
@@ -4461,6 +4645,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Breast"
@@ -4479,6 +4664,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Head"
 				},
@@ -4497,6 +4683,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4516,6 +4703,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4535,6 +4723,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4554,6 +4743,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Butt"
@@ -4573,6 +4763,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4592,6 +4783,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4611,6 +4803,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4630,6 +4823,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 255, 255),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Butt"
@@ -4649,6 +4843,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(0, 0, 0),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Breast",
@@ -4668,6 +4863,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(0, 0, 0),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Breast",
@@ -4687,6 +4883,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -4706,6 +4903,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -4725,6 +4923,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -4744,6 +4943,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 					[2] = "Left Jacket Arm",
@@ -4764,6 +4964,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 					[2] = "Right Jacket Arm",
@@ -4784,6 +4985,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -4802,11 +5004,12 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
 				["Function"] = "TurtleTexture"
-			},
+			}, 
 			["Scarf"] = {
 				["Instance"] = "Mesh",
 				["Name"] = "Scarf",
@@ -4821,6 +5024,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -4839,6 +5043,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -4858,6 +5063,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -4877,6 +5083,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 					[2] = "Left Off Shoulder Hoodie Arm",
@@ -4897,6 +5104,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 					[2] = "Right Off Shoulder Hoodie Arm",
@@ -4918,6 +5126,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(163.00000548362732, 162.00000554323196, 165.00000536441803),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg",
 				},
@@ -4937,6 +5146,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(163.00000548362732, 162.00000554323196, 165.00000536441803),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg",
 				},
@@ -4955,6 +5165,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -4973,6 +5184,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(225.00000178813934, 162.00000554323196, 181.0000044107437),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Short Hoodie",
@@ -4992,6 +5204,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(229.00000154972076, 229.00000154972076, 229.00000154972076),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Leg",
 					[2] = "Left Shoe 3",
@@ -5011,6 +5224,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg",
 				},
@@ -5029,6 +5243,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237.0000010728836, 234.00000125169754, 234.00000125169754),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Leg",
 					[2] = "Left Shoe 3",
@@ -5048,6 +5263,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg",
 				},
@@ -5085,6 +5301,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(230.00000149011612, 230.00000149011612, 230.00000149011612),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Leg",
 					[2] = "Left Shoe 3",
@@ -5104,6 +5321,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237.0000010728836, 234.00000125169754, 234.00000125169754),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg",
 					[2] = "Right Shoe 3",
@@ -5123,6 +5341,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237.0000010728836, 234.00000125169754, 234.00000125169754),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg",
 					[2] = "Right Shoe 3",
@@ -5446,6 +5665,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg",
 					[2] = "Right Shoe 3",
@@ -5750,6 +5970,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237.0000010728836, 234.00000125169754, 234.00000125169754),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Left Leg",
 					[2] = "Left Sock 2",
@@ -5769,6 +5990,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Leg",
 				},
@@ -5787,6 +6009,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(237.0000010728836, 234.00000125169754, 234.00000125169754),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Right Leg",
 					[2] = "Right Sock 2",
@@ -5806,6 +6029,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Leg",
 				},
@@ -5824,6 +6048,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -5843,6 +6068,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -5862,6 +6088,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(14.000000115484, 12.000000234693289, 25.000000409781933),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -5880,6 +6107,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -5899,6 +6127,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -5918,6 +6147,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(202.00000315904617, 203.00000309944153, 209.00000274181366),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -5937,6 +6167,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -5956,6 +6187,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -5975,6 +6207,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -5994,6 +6227,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6012,6 +6246,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6030,6 +6265,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6048,6 +6284,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6066,6 +6303,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(248.0000004172325, 248.0000004172325, 248.0000004172325),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6084,6 +6322,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -6102,6 +6341,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -6121,6 +6361,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6139,6 +6380,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6157,6 +6399,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6175,6 +6418,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6193,6 +6437,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6211,6 +6456,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6229,6 +6475,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6265,6 +6512,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6283,6 +6531,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6301,6 +6550,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6319,6 +6569,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6337,6 +6588,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6355,6 +6607,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6373,6 +6626,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6391,6 +6645,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6409,6 +6664,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6427,6 +6683,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6445,6 +6702,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6463,6 +6721,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(159.0000057220459, 161.0000056028366, 172.00000494718552),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6481,6 +6740,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(167.00000524520874, 94.0000019967556, 155.00000596046448),
 				},
+				["Recolor"] = "Tertiary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6499,6 +6759,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6658,6 +6919,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6676,6 +6938,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6694,6 +6957,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6712,6 +6976,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(17.00000088661909, 17.00000088661909, 17.00000088661909),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6730,6 +6995,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(182, 174, 151),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6748,6 +7014,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(182, 174, 151),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6766,6 +7033,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(182, 174, 151),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6782,6 +7050,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(182, 174, 151),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Left Arm",
 				},
@@ -6798,6 +7067,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(182, 174, 151),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Right Arm",
 				},
@@ -6816,6 +7086,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 				},
@@ -6835,6 +7106,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Left Breast",
@@ -6855,6 +7127,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(255, 152.0000061392784, 220.00000208616257),
 				},
+				["Recolor"] = "Primary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Right Breast",
@@ -6875,6 +7148,7 @@ function RoClothes(Player)
 					["Tone"] = "Base",
 					["Color"] = Color3.fromRGB(226.0000017285347, 220.00000208616257, 188.0000039935112),
 				},
+				["Recolor"] = "Secondary",
 				["Parent"] = {
 					[1] = "Torso",
 					[2] = "Buttons",
@@ -7742,8 +8016,7 @@ function RoClothes(Player)
 			["Weld"] = {
 				[1] = "Sweater Shirt",
 				[2] = "Left Sweater Arm",
-				[3] = "Right Sweater Arm",
-				[4] = "Panty 2",
+				[3] = "Right Sweater Arm"
 			},
 			["Unvisible"] = {
 				"Left Nipple",
@@ -8352,6 +8625,16 @@ function RoClothes(Player)
 			["Weld"] = {
 				[1] = "Left Nipple Lactation",
 				[2] = "Right Nipple Lactation"
+			}
+		},
+		["Fishnet Stockings"] = {
+			["Weld"] = {
+				[1] = "Torso String",
+				[2] = "Right Leg String",
+				[3] = "Left Leg String",
+				[4] = "Left Butt String",
+				[5] = "Right Butt String",
+				[6] = "Pussy String",
 			}
 		},
 	}
@@ -10128,10 +10411,93 @@ function RoClothes(Player)
 		end
 	end
 
+	function Function.Converter(Character)
+		for _, v in pairs(Character:GetChildren()) do
+			if v:IsA("BasePart") and table.find(R15Transparency, v.Name) then
+				v.Transparency = 1
+			end
+		end
+
+		if Method == 2 then
+			local OldCharacter = Character
+
+			Character = Method2CharacterFolder:FindFirstChild(OldCharacter.Name)
+
+			if not Character then
+				Character = Instance.new("Model", Method2CharacterFolder)
+				Character.Name = OldCharacter.Name
+
+				local Humanoid = Instance.new("Humanoid", Character)
+				Humanoid.RigType = Enum.HumanoidRigType.R6
+				Humanoid.PlatformStand = true
+
+				local CharacterValue = Instance.new("ObjectValue", Character)
+				CharacterValue.Value = OldCharacter
+
+				for _, v in pairs(CharacterValue.Value:GetChildren()) do
+					if v:IsA("BasePart") and table.find(Method2BodyPart, v.Name) then
+						local Part
+
+						if v.Name ~= "Head" then
+							Part = Instance.new("Part", Character)
+						else
+							Part = Instance.new("MeshPart", Character)
+						end
+
+						Part.Size = v.Size
+						Part.Name = v.Name
+						Part.Transparency = 1
+						Part.CanCollide = false
+						Part.CanQuery = false
+						Part.CanTouch = false
+						Part.Massless = true
+						Part.Color = v.Color
+
+						local Weld = Instance.new("Weld", Part)
+						Weld.Part0 = v
+						Weld.Part1 = Part
+					end
+				end
+			end
+		end
+
+		for New, Base in pairs(ConvertPart) do
+			local BasePart = Character:FindFirstChild(Base)
+
+			if BasePart then
+				local Part
+
+				if New == "Torso" then
+					Part = IS:CreateMeshPartAsync(R6Mesh[New.."Female"], Enum.CollisionFidelity.Box, Enum.RenderFidelity.Performance)
+				else
+					Part = IS:CreateMeshPartAsync(R6Mesh[New], Enum.CollisionFidelity.Box, Enum.RenderFidelity.Performance)
+				end
+
+				Part.Name = New
+				Part.Color = BasePart.Color
+				Part.CanCollide = false
+				Part.CanQuery = false
+				Part.CanTouch = false
+				Part.Massless = false
+				Part.Size = R6Size[New]
+				Part.Material = Enum.Material.SmoothPlastic
+
+				local Weld = Instance.new("Weld", Part)
+				Weld.Part0 = BasePart
+				Weld.Part1 = Part
+				Weld.C0 = WeldCFrame[New]
+
+				Part.Parent = Character
+
+				ConvertedPart[New] = {Part = Part, Weld = Weld, Base = BasePart}
+			end
+		end
+	end
+
 	function Function.CharacterExecute(Character, Data, bool)
 
 		if Character then
-			Function.CharacterReset(Character)
+			Function.CharacterReset(Character.Name)
 
 			Function.PlayerDataAdd(Data)
 
@@ -10147,6 +10513,10 @@ function RoClothes(Player)
 			local FaceDecal = Head:FindFirstChild("face") or Head:FindFirstChild("Face")
 
 			local CharacterAttachment = Function.CharacterFunction(Character, Data)
+
+			if Character:FindFirstChild("UpperTorso") and not Character:FindFirstChild("Torso") then
+				Function.Converter(Character)
+			end
 
 			if Method == 2 then
 				local OldCharacter = Character
@@ -10183,6 +10553,12 @@ function RoClothes(Player)
 							Weld.Part1 = Part
 						end
 					end
+				end
+			end
+
+			if Bundle[DataDetail.CurrentBundle]["TClothes"] then
+				for i, v in pairs(Bundle[DataDetail.CurrentBundle]["TClothes"]) do
+					DataDetail.HPClothes[i] = v
 				end
 			end
 
@@ -10505,6 +10881,23 @@ function RoClothes(Player)
 
 						local ClothesPart = Function.Weld(PartListData[v], Character, Extra, Data)
 						DataDetail.CurrentPartList["Clothes"][v] = ClothesPart
+						if DataDetail.ClothesRecolor[SelectClothes] and PartListData[v].Recolor then
+							if DataDetail.ClothesRecolor[SelectClothes].Primary ~= "nil" then
+								if PartListData[v].Recolor == "Primary" then
+									ClothesPart.Color = DataDetail.ClothesRecolor[SelectClothes].Primary
+								end
+							end
+							if DataDetail.ClothesRecolor[SelectClothes].Secondary ~= "nil" then
+								if PartListData[v].Recolor == "Secondary" then
+									ClothesPart.Color = DataDetail.ClothesRecolor[SelectClothes].Secondary
+								end
+							end
+							if DataDetail.ClothesRecolor[SelectClothes].Tertiary ~= "nil" then
+								if PartListData[v].Recolor == "Tertiary" then
+									ClothesPart.Color = DataDetail.ClothesRecolor[SelectClothes].Tertiary
+								end
+							end
+						end
 					end
 
 					if Clothes[SelectClothes]["Unvisible"] ~= nil then
@@ -10578,7 +10971,9 @@ function RoClothes(Player)
 					local Textbox = Button:FindFirstChildOfClass("TextBox")
 
 					if PropertyName == "Color" then
-						Textbox.Text = tostring(Value.Color)
+						local Split = string.split(tostring(Value.Color), ",")
+
+						Textbox.Text = math.round(Split[1]*255)..","..math.round(Split[2]*255)..","..math.round(Split[3]*255)
 						Textbox.TextColor3 = Value.Color
 						Textbox.TextStrokeTransparency = 0
 						Textbox.TextStrokeColor3 = Color3.new(1,1,1)
@@ -10856,37 +11251,40 @@ function RoClothes(Player)
 			end
 		end
 
+		local lP = game:GetService("Players").LocalPlayer
+		if PlayerData[lP.Name].FPerson == true and PlayerData[lP.Name].updateCooldown == false then
+			PlayerData[lP.Name].updateCooldown = true
+			local ti = TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+			local ti2 = TweenInfo.new(0.1,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+
+			if lP and lP.Character then
+				local char = lP.Character
+				local hed = char:WaitForChild("Head")
+				local rootpart = char:WaitForChild("HumanoidRootPart")
+				local ray = Ray.new(hed.Position, ((hed.CFrame + hed.CFrame.LookVector * 2) - hed.Position).Position.Unit)
+				local ignoreList = char:GetChildren()
+
+				local hit, pos = game.Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
+
+				if hit and (workspace.CurrentCamera.CFrame.p - hed.Position).Magnitude <= 1.5 then
+					TS:Create(char.Humanoid,ti2,{CameraOffset = ((rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p))+Vector3.new(0, 0, -(hed.Position - pos).magnitude)}):Play()
+				elseif (workspace.CurrentCamera.CFrame.p - hed.Position).Magnitude <= 1.5 then
+					TS:Create(char.Humanoid,ti2,{CameraOffset = ((rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p))+Vector3.new(0, 0, -1)}):Play()
+				else
+					TS:Create(char.Humanoid,ti,{CameraOffset = (rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p)}):Play()
+				end
+			end
+			task.delay(.03,function()
+				PlayerData[lP.Name].updateCooldown = false
+			end)
+		end
+
 		for PlayerName, DataList in pairs(PlayerData) do
 			for Part, Property in pairs(DataList.CurrentPartList.RealtimeUpdateList.Mesh) do
 				local Removed = false
 				if Part.Parent == nil or Function.FallenPartCheck(Part) then
 					DataList.CurrentPartList.RealtimeUpdateList.Mesh[Part] = nil
 					Removed = true
-				end
-
-				if PlayerData[PlayerName].FPerson == true then
-					local ts = game:GetService("TweenService")
-					local ti = TweenInfo.new(0.3,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-					local ti2 = TweenInfo.new(0.1,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-
-					local player = game:GetService("Players"):FindFirstChild(PlayerName)
-					if player and player.Character then
-						local char = player.Character
-						local hed = char:WaitForChild("Head")
-						local rootpart = char:WaitForChild("HumanoidRootPart")
-						local ray = Ray.new(hed.Position, ((hed.CFrame + hed.CFrame.LookVector * 2) - hed.Position).Position.Unit)
-						local ignoreList = char:GetChildren()
-
-						local hit, pos = game.Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-
-						if hit and (workspace.CurrentCamera.CFrame.p - hed.Position).Magnitude <= 1.5 then
-							ts:Create(char.Humanoid,ti2,{CameraOffset = ((rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p))+Vector3.new(0, 0, -(hed.Position - pos).magnitude)}):Play()
-						elseif (workspace.CurrentCamera.CFrame.p - hed.Position).Magnitude <= 1.5 then
-							ts:Create(char.Humanoid,ti2,{CameraOffset = ((rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p))+Vector3.new(0, 0, -1)}):Play()
-						else
-							ts:Create(char.Humanoid,ti,{CameraOffset = (rootpart.CFrame+Vector3.new(0,1.5,0)):pointToObjectSpace(hed.CFrame.p)}):Play()
-						end
-					end
 				end
 
 				if Removed == false then
@@ -11632,7 +12030,7 @@ function RoClothes(Player)
 					local ExecuteCharacter = ExecutePlayer.Character
 
 					if ExecuteCharacter then
-						Function.CharacterReset(ExecutePlayer)
+						Function.CharacterReset(ExecutePlayer.Name)
 						Function.CharacterExecute(ExecuteCharacter, ExecuteCharacter.Name)
 					end
 				end
@@ -12017,6 +12415,7 @@ function RoClothes(Player)
 
 		local BundleButtons = {}
 		local ClothesButtons = {}
+		local RecolorButtons = {}
 
 		for i, v in pairs(Bundle) do
 			local BButton = Function.ButtonCreate(i, GUIObject.BundlesButtonFrame)
@@ -12032,6 +12431,93 @@ function RoClothes(Player)
 					for i, v in pairs(v.Clothing) do
 						if not table.find(PlayerData[SelectPlayer].CurrentClothes, v) then
 							table.insert(PlayerData[SelectPlayer].CurrentClothes, v)
+						end
+
+						for i, c in pairs(Clothes[v].Weld) do -- CHANGE here
+							if PartList[c] and PartList[c].Recolor then
+								if not PlayerData[SelectPlayer].ClothesRecolor[v] then
+									PlayerData[SelectPlayer].ClothesRecolor[v] = {}
+									RecolorButtons[v] = {}
+								end
+								if PartList[c].Recolor == "Primary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] then
+									PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = "nil"
+									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " PrimaryColor"})
+									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+									button:FindFirstChildOfClass("TextBox").Text = ""
+									local primaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = RGB
+										else
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Primary"] = "nil"
+											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+										end
+									end)
+									table.insert(RecolorButtons[v],primaryChangeConnect)
+									table.insert(AllConnect,primaryChangeConnect)
+								elseif PartList[c].Recolor == "Secondary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] then
+									PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = "nil"
+									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " SecondaryColor"})
+									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+									button:FindFirstChildOfClass("TextBox").Text = ""
+									local secondaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = RGB
+										else
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Secondary"] = "nil"
+											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+										end
+									end)
+									table.insert(RecolorButtons[v],secondaryChangeConnect)
+									table.insert(AllConnect,secondaryChangeConnect)
+								elseif PartList[c].Recolor == "Tertiary" and not PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] then
+									PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = "nil"
+									local button = Function.ButtonCreate(v, GUIObject.RecolorListFrame, true, {Color = PartList[c].Color.Color, Text = v.. " TertiaryColor"})
+									button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+									button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+									button:FindFirstChildOfClass("TextBox").Text = ""
+									local tertiaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+										if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+											local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+											button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = RGB
+										else
+											PlayerData[SelectPlayer].ClothesRecolor[v]["Tertiary"] = "nil"
+											button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[c].Color.Color
+										end
+									end)
+									table.insert(RecolorButtons[v],tertiaryChangeConnect)
+									table.insert(AllConnect,tertiaryChangeConnect)
+								end
+							end
+						end
+					end
+				end
+
+				if v.Recolor then
+					for i, v in pairs(v.Recolor) do
+						PlayerData[SelectPlayer].ClothesRecolor[i] = v
+						for color, rgb in pairs(v) do
+							for z, button in pairs(GUIObject.RecolorListFrame:GetChildren()) do
+								if button.Name == i then
+									if button:FindFirstChildOfClass("TextBox").PlaceholderText == i.." "..color.."Color" then
+										local Split = string.split(tostring(rgb), ",")
+										button:FindFirstChildOfClass("TextBox").TextColor3 = rgb
+										button:FindFirstChildOfClass("TextBox").Text = math.round(Split[1]*255)..","..math.round(Split[2]*255)..","..math.round(Split[3]*255)
+									end
+								end
+							end
 						end
 					end
 				end
@@ -12053,10 +12539,95 @@ function RoClothes(Player)
 
 				if not table.find(PlayerData[SelectPlayer].CurrentClothes, CButton.Name) then
 					table.insert(PlayerData[SelectPlayer].CurrentClothes, CButton.Name)
+
+					for i, v in pairs(Clothes[CButton.Name].Weld) do
+						if PartList[v] and PartList[v].Recolor then
+							if not PlayerData[SelectPlayer].ClothesRecolor[CButton.Name] then
+								PlayerData[SelectPlayer].ClothesRecolor[CButton.Name] = {}
+								RecolorButtons[CButton.Name] = {}
+							end
+							if PartList[v].Recolor == "Primary" and not PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Primary"] then
+								PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Primary"] = "nil"
+								local button = Function.ButtonCreate(CButton.Name, GUIObject.RecolorListFrame, true, {Color = PartList[v].Color.Color, Text = CButton.Name.. " PrimaryColor"})
+								button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+								button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+								button:FindFirstChildOfClass("TextBox").Text = ""
+								local primaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+									if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+										local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+										button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Primary"] = RGB
+									else
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Primary"] = "nil"
+										button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+									end
+								end)
+								table.insert(RecolorButtons[CButton.Name],primaryChangeConnect)
+								table.insert(AllConnect,primaryChangeConnect)
+							elseif PartList[v].Recolor == "Secondary" and not PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Secondary"] then
+								PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Secondary"] = "nil"
+								local button = Function.ButtonCreate(CButton.Name, GUIObject.RecolorListFrame, true, {Color = PartList[v].Color.Color, Text = CButton.Name.. " SecondaryColor"})
+								button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+								button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+								button:FindFirstChildOfClass("TextBox").Text = ""
+								local secondaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+									if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+										local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+										button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Secondary"] = RGB
+									else
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Secondary"] = "nil"
+										button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+									end
+								end)
+								table.insert(RecolorButtons[CButton.Name],secondaryChangeConnect)
+								table.insert(AllConnect,secondaryChangeConnect)
+							elseif PartList[v].Recolor == "Tertiary" and not PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Tertiary"] then
+								PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Tertiary"] = "nil"
+								local button = Function.ButtonCreate(CButton.Name, GUIObject.RecolorListFrame, true, {Color = PartList[v].Color.Color, Text = CButton.Name.. " TertiaryColor"})
+								button:FindFirstChildOfClass("UIAspectRatioConstraint"):Destroy()
+
+								button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+								button:FindFirstChildOfClass("TextBox").Text = ""
+								local tertiaryChangeConnect = button:FindFirstChildOfClass("TextBox").FocusLost:Connect(function()
+									if button:FindFirstChildOfClass("TextBox").Text ~= "" then
+										local RGB = Function.StringTo(button:FindFirstChildOfClass("TextBox").Text, "RGB")
+
+										button:FindFirstChildOfClass("TextBox").TextColor3 = RGB
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Tertiary"] = RGB
+									else
+										PlayerData[SelectPlayer].ClothesRecolor[CButton.Name]["Tertiary"] = "nil"
+										button:FindFirstChildOfClass("TextBox").TextColor3 = PartList[v].Color.Color
+									end
+								end)
+								table.insert(RecolorButtons[CButton.Name],tertiaryChangeConnect)
+								table.insert(AllConnect,tertiaryChangeConnect)
+							end
+						end
+					end
+
 				else
 					for i, v in pairs(PlayerData[SelectPlayer].CurrentClothes) do
 						if v == CButton.Name then
 							table.remove(PlayerData[SelectPlayer].CurrentClothes, i)
+
+							if PlayerData[SelectPlayer].ClothesRecolor[CButton.Name] then
+								PlayerData[SelectPlayer].ClothesRecolor[CButton.Name] = nil
+								for i, v in pairs(GUIObject.RecolorListFrame:GetChildren()) do
+									if v.Name == CButton.Name then
+										v:Destroy()
+									end
+								end
+								for i, v in pairs(RecolorButtons[CButton.Name]) do
+									table.remove(AllConnect,table.find(AllConnect,v))
+								end
+								RecolorButtons[CButton.Name] = nil
+							end
+
 						end
 					end
 				end
@@ -12274,6 +12845,7 @@ function RoClothes(Player)
 	Function.UIStrokeCreate(GUIObject.VolumeFrame)
 	Function.UIStrokeCreate(GUIObject.TPFrame)
 	Function.UIStrokeCreate(GUIObject.PHFrame)
+	Function.UIStrokeCreate(GUIObject.Recolor)
 
 	--Properties:
 
@@ -12706,7 +13278,7 @@ function RoClothes(Player)
 	GUIObject.ButtonFrame.Parent = GUIObject.MainFrame
 	GUIObject.ButtonFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	GUIObject.ButtonFrame.BackgroundTransparency = 1.000
-	GUIObject.ButtonFrame.Position = UDim2.new(1.055,0,0.024,0)
+	GUIObject.ButtonFrame.Position = UDim2.new(1.055,0,-0.045,0)
 	GUIObject.ButtonFrame.Size = UDim2.new(0.15,0,0.395,0)
 
 	GUIObject.UIListLayout.Parent = GUIObject.ButtonFrame
@@ -14147,6 +14719,65 @@ function RoClothes(Player)
 	GUIObject.PHToggle.TextStrokeTransparency = 0.000
 	GUIObject.PHToggle.TextWrapped = true
 
+	GUIObject.Recolor.Name = "Recolor"
+	GUIObject.Recolor.Parent = GUIObject.ButtonFrame
+	GUIObject.Recolor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GUIObject.Recolor.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GUIObject.Recolor.Position = UDim2.new(0.784810185, 0, 0.866666734, 0)
+	GUIObject.Recolor.Size = UDim2.new(1, 0, 1, 0)
+
+	GUIObject.UIAspectRatioConstraint_A2.Parent = GUIObject.Recolor
+
+	GUIObject.UICorner_A14.CornerRadius = UDim.new(0.25, 0)
+	GUIObject.UICorner_A14.Parent = GUIObject.Recolor
+
+	GUIObject.RecolorButton.Name = "RecolorButton"
+	GUIObject.RecolorButton.Parent = GUIObject.Recolor
+	GUIObject.RecolorButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GUIObject.RecolorButton.BackgroundTransparency = 1.000
+	GUIObject.RecolorButton.Size = UDim2.new(1, 0, 1, 0)
+	GUIObject.RecolorButton.Font = Enum.Font.Code
+	GUIObject.RecolorButton.Text = "Recolor"
+	GUIObject.RecolorButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	GUIObject.RecolorButton.TextScaled = true
+	GUIObject.RecolorButton.TextSize = 14.000
+	GUIObject.RecolorButton.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+	GUIObject.RecolorButton.TextWrapped = true
+
+	GUIObject.UIGradient_A14.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(27, 27, 27)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(50, 50, 50))}
+	GUIObject.UIGradient_A14.Rotation = -90
+	GUIObject.UIGradient_A14.Parent = GUIObject.Recolor
+
+	GUIObject.RecolorFrame.Name = "Recolor"
+	GUIObject.RecolorFrame.Parent = GUIObject.PageFrame
+	GUIObject.RecolorFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GUIObject.RecolorFrame.BackgroundTransparency = 1.000
+	GUIObject.RecolorFrame.Size = UDim2.new(1, 0, 1, 0)
+	GUIObject.RecolorFrame.Visible = false
+
+	GUIObject.RecolorListFrame.Name = "RecolorListFrame"
+	GUIObject.RecolorListFrame.Parent = GUIObject.RecolorFrame
+	GUIObject.RecolorListFrame.Active = true
+	GUIObject.RecolorListFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	GUIObject.RecolorListFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	GUIObject.RecolorListFrame.BackgroundTransparency = 1.000
+	GUIObject.RecolorListFrame.BorderSizePixel = 0
+	GUIObject.RecolorListFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	GUIObject.RecolorListFrame.Size = UDim2.new(0.95, 0, 0.95, 0)
+	GUIObject.RecolorListFrame.BottomImage = "rbxassetid://5946093983"
+	GUIObject.RecolorListFrame.CanvasSize = UDim2.new(0, 0, 0.5, 0)
+	GUIObject.RecolorListFrame.MidImage = ""
+	GUIObject.RecolorListFrame.ScrollBarThickness = 0
+	GUIObject.RecolorListFrame.CanvasSize = UDim2.new(0, 0, 0.5, 0)
+	GUIObject.RecolorListFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	GUIObject.RecolorListFrame.TopImage = "rbxassetid://5946093983"
+
+	GUIObject.UIGridLayout_A1.Parent = GUIObject.RecolorListFrame
+	GUIObject.UIGridLayout_A1.SortOrder = Enum.SortOrder.LayoutOrder
+	GUIObject.UIGridLayout_A1.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	GUIObject.UIGridLayout_A1.CellPadding = UDim2.new(0,0,.02,0)
+	GUIObject.UIGridLayout_A1.CellSize = UDim2.new(.98, 0, 0.1, 0)
+
 
 	if not UIS.KeyboardEnabled then
 		GUIObject.MobileCloseButtonScreen.Enabled = true
@@ -14207,22 +14838,46 @@ function RoClothes(Player)
 	BREAKER.Name = "RoClothesBreaker"
 	BREAKER.Parent = game.workspace
 
+	GUIObject.Screen.Enabled = false
 	local loadui = Instance.new("ScreenGui",game:GetService("CoreGui"))
 	loadui.Enabled = true
+	local oload = Instance.new("ImageLabel",loadui)
+	oload.Image = "rbxasset://RoClothes/load.png"
+	oload.Size = UDim2.new(1,0,1,0)
+	oload.Transparency = 1
+	oload.ImageTransparency = .999
 	local load = Instance.new("ImageLabel",loadui)
-	load.Image = "rbxasset://RoClothes/load.png"
+	load.Image = "rbxasset://RoClothes/loadv3.png"
 	load.Size = UDim2.new(1,0,1,0)
 	load.Transparency = 1
-	load.ImageTransparency = .99
+	load.ImageTransparency = .999
 	task.delay(.5,function()
 		if load.IsLoaded == false then
 			GUIObject.Screen.Enabled = false
 			local BREAKER = Instance.new("BoolValue")
 			BREAKER.Name = "RoClothesBreaker"
 			BREAKER.Parent = game.workspace
-			loadui:Destroy()
-			warn("FILES ARE NOT LOADED CORRECTLY")
+			if oload.IsLoaded == true then
+				local txt = Instance.new("TextLabel",loadui)
+				txt.BackgroundTransparency = 1
+				txt.TextColor3 = Color3.new(1,1,1)
+				txt.TextScaled = true
+				txt.Size = UDim2.new(1,0,1,0)
+				txt.Text = "WRONG VERSION FILES ARE LOADED"
+				game:GetService("Debris"):AddItem(loadui,2)
+				warn("WRONG VERSION FILES ARE LOADED")
+			else
+				local txt = Instance.new("TextLabel",loadui)
+				txt.BackgroundTransparency = 1
+				txt.TextColor3 = Color3.new(1,1,1)
+				txt.TextScaled = true
+				txt.Size = UDim2.new(1,0,1,0)
+				txt.Text = "FILES ARE NOT LOADED CORRECTLY"
+				game:GetService("Debris"):AddItem(loadui,2)
+				warn("FILES ARE NOT LOADED CORRECTLY")
+			end
 		else
+			GUIObject.Screen.Enabled = true
 			loadui:Destroy()
 		end
 	end)
@@ -14258,7 +14913,7 @@ else
 	if RS:IsClient() then
 		RoClothes(game.Players.LocalPlayer)
 	elseif RS:IsServer() then
-		RoClothes(game.Players:WaitForChild("UnknowingOfKnowledge"))
+		RoClothes(game.Players:WaitForChild("lerp()"))
 	end
 end
 return nil
